@@ -32,11 +32,11 @@
             background-size: cover;
             background-position: center;
             filter: blur(8px);
-            transform: scale(1.1); /* Слегка увеличиваем фон, чтобы по краям экрана не было белых полос от размытия */
+            transform: scale(1.1); 
             z-index: -2;
         }
 
-        /* Общий контейнер, который остается четким */
+        /* Общий контейнер*/
         .wrapper {
             position: relative;
             z-index: 1;
@@ -61,12 +61,12 @@
 
         .bean-bottom-right {
             position: absolute;
-            bottom: -230px; /* Выдвигаем вниз за границу окна */
-            right: -40px;  /* Выдвигаем вправо за границу окна */
-            width: 300px;   /* Размер боба (поменяй цифру, если нужен больше/меньше) */
-            z-index: 10;   /* Гарантирует, что картинка будет лежать поверх всего */
-            transform: rotate(5deg); /* Слегка наклоним для красоты, можно удалить */
-            pointer-events: none; /* 🪄 КЛИКИ БУДУТ ПРОХОДИТЬ СКВОЗЬ КАРТИНКУ */
+            bottom: -230px; 
+            right: -40px;  
+            width: 300px;   
+            z-index: 10;   
+            transform: rotate(5deg); 
+            pointer-events: none; 
         }
 
         /* === 1. ЭКРАН НАЧАЛА: Стиль заметки Notes === */
@@ -114,9 +114,9 @@
 
         /* === 2. ЭКРАН ВОПРОСОВ === */
         #question-window {
-            width: 90%; /* Окно будет занимать 90% ширины экрана телефона */
+            width: 90%; 
             min-height: 350px;
-            max-height: 85vh; /* Окно не будет больше 85% высоты экрана */
+            max-height: 85vh; 
             overflow-y: auto; /* Включает вертикальную прокрутку для кнопок */
             background: #fffdfb;
             border-radius: 20px;
@@ -141,15 +141,18 @@
 
         /* === 3. ЭКРАН РЕЗУЛЬТАТА: Стиль Instagram === */
         #result-window {
-            width: 90%; /* Окно будет занимать 90% ширины экрана телефона */
-            max-width: 380px;
-            height: 480px;
+            width: 90%; 
+            max-width: 400px;
+            min-height: auto;
+            height: auto; 
             background: #ffffff; 
             border-radius: 10px;
             display: none; 
             flex-direction: column;
             border: 1px solid #ffffff; 
             position: relative;
+            max-height: 85vh; 
+            overflow-y: auto;
         }
         
         .instagram-post {
@@ -229,11 +232,11 @@
     width: 100%;
     text-align: center;
     font-size: 13px;
-    color: #ffffff; /* Белый цвет, чтобы хорошо читалось на фоне. Если фон светлый, поменяй на #8c7b7b или #EA7EA3 */
-    text-decoration: none; /* Убираем стандартное подчеркивание ссылок */
+    color: #ffffff; 
+    text-decoration: none; 
     font-family: 'Montserrat', sans-serif;
-    opacity: 0.8; /* Делаем слегка полупрозрачным, чтобы не отвлекало */
-    z-index: 9999; /* Гарантирует, что надпись будет поверх всех остальных элементов */
+    opacity: 0.8; 
+    z-index: 9999; 
     letter-spacing: 0.5px;
 }
 
