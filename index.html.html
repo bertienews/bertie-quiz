@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Твой пейринг из Гарри Поттера</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+   <style>
+        /* ОСНОВНЫЕ СТИЛИ ЭКРАНА */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            color: #5e4d58;
+            overflow: hidden;
+            overscroll-behavior: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* ОТДЕЛЬНЫЙ СЛОЙ ДЛЯ РАЗМЫТОГО ФОНА */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #fdf5e6;
+            background-image: url('back.png');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            transform: scale(1.1); /* Слегка увеличиваем фон, чтобы по краям экрана не было белых полос от размытия */
+            z-index: -2;
+        }
+
+        /* Общий контейнер, который остается четким */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* Общие стили окон */
+        .window {
+            display: none; 
+            border-radius: 20px;
+            box-shadow: 0 10px 25px #c58e8e;
+            /*overflow: hidden;*/
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .bean-bottom-right {
+            position: absolute;
+            bottom: -230px; /* Выдвигаем вниз за границу окна */
+            right: -40px;  /* Выдвигаем вправо за границу окна */
+            width: 300px;   /* Размер боба (поменяй цифру, если нужен больше/меньше) */
+            z-index: 10;   /* Гарантирует, что картинка будет лежать поверх всего */
+            transform: rotate(5deg); /* Слегка наклоним для красоты, можно удалить */
+            pointer-events: none; /* 🪄 КЛИКИ БУДУТ ПРОХОДИТЬ СКВОЗЬ КАРТИНКУ */
+        }
+
+        /* === 1. ЭКРАН НАЧАЛА: Стиль заметки Notes === */
+        #start-window {
+            display: flex; 
+            width: 90%; 
+            max-width: 380px;
+            height: auto;
+            background: #fffdfb; 
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #fffdfb; 
+            padding-bottom: 40px;
+        }
+        
+        .notes-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #EA7EA3; 
+            font-weight: bold;
+            font-size: 14px;
+    
+            /* Новые свойства для линии */
+            padding-bottom: 15px; /* Отступ от текста шапки до самой линии */
+            margin-bottom: 25px; /* Отступ от линии вниз, до заголовка */
+            border-bottom: 1px solid #EA7EA3; /* тонкая линия */
+        }
+
+        #start-title {
+            font-size: 30px;
+            color: #EA7EA3;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', serif;
+            font-weight: bold;
+        }
+
+        #start-subtitle {
+            font-size: 16px;
+            font-style: italic;
+            color: #5e4d58;
+            margin-bottom: 30px;
+        }
+
+        /* === 2. ЭКРАН ВОПРОСОВ === */
+        #question-window {
+            width: 90%; /* Окно будет занимать 90% ширины экрана телефона */
+            min-height: 350px;
+            max-height: 85vh; /* Окно не будет больше 85% высоты экрана */
+            overflow-y: auto; /* Включает вертикальную прокрутку для кнопок */
+            background: #fffdfb;
+            border-radius: 20px;
+            display: none; 
+            flex-direction: column;
+            border: 2px solid #fffdfb;
+            padding-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+
+        #answer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* === 3. ЭКРАН РЕЗУЛЬТАТА: Стиль Instagram === */
+        #result-window {
+            width: 90%; /* Окно будет занимать 90% ширины экрана телефона */
+            max-width: 380px;
+            height: 480px;
+            background: #ffffff; 
+            border-radius: 10px;
+            display: none; 
+            flex-direction: column;
+            border: 1px solid #ffffff; 
+            position: relative;
+        }
+        
+        .instagram-post {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            padding-top: 0; 
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        #result-pairing-name {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-top: 0;
+            color: #EA7EA3; 
+            font-family: 'Montserrat', serif;
+        }
+
+        #result-description {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #5c4d4d;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .insta-footer {
+            width: 100%;
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            color: #EA7EA3;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+
+        /* СТИЛИ КНОПОК */
+        .btn {
+            background-color: transparent;
+            border: 2px solid #EA7EA3; 
+            color: #EA7EA3;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-family: 'Montserrat', serif;
+        }
+
+        .btn:hover {
+            background-color: #EA7EA3;
+            color: white;
+        }
+        
+        .bean-decorative {
+            position: absolute;
+            width: 30px;
+            height: auto;
+            opacity: 0.8;
+            z-index: 5;
+        }
+        #tg-credit {
+    position: fixed;
+    bottom: 15px; /* Отступ от самого низа экрана */
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    color: #ffffff; /* Белый цвет, чтобы хорошо читалось на фоне. Если фон светлый, поменяй на #8c7b7b или #EA7EA3 */
+    text-decoration: none; /* Убираем стандартное подчеркивание ссылок */
+    font-family: 'Montserrat', sans-serif;
+    opacity: 0.8; /* Делаем слегка полупрозрачным, чтобы не отвлекало */
+    z-index: 9999; /* Гарантирует, что надпись будет поверх всех остальных элементов */
+    letter-spacing: 0.5px;
+}
+
+#tg-credit:active {
+    opacity: 1; /* При нажатии надпись становится ярче */
+}
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Декоративный элемент (если нужен) -->
+        
+        
+        <!-- ЭКРАН НАЧАЛА -->
+        <div class="window" id="start-window">
+            <div class="notes-header">
+                <span style="font-size: 16px" >&lt; Notes</span>
+               <span style="font-size: 16px; display: flex; align-items: center; gap: 10px;">
+            
+            <!-- Иконка "Поделиться" (квадрат со стрелкой) -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            
+            <!-- Иконка "Меню" (линии в круге) -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="7" y1="9" x2="17" y2="9"></line>
+                <line x1="7" y1="12" x2="17" y2="12"></line>
+                <line x1="7" y1="15" x2="17" y2="15"></line>
+            </svg>
+
+            Done
+        </span>
+            </div>
+            <div id="start-title">КАКОЙ ТЫ ПЕЙРИНГ?</div>
+            <div id="start-subtitle">Открой упаковку драже Берти Боттс и узнай!</div>
+            <button class="btn" id="start-btn">ОТКРЫТЬ 🪄</button>
+            
+        </div>
+
+        <!-- ЭКРАН ВОПРОСОВ -->
+        <div class="window" id="question-window">
+            <div class="question-text" id="question">Текст вопроса загружается...</div>
+            <div id="answer-buttons"></div>
+        </div>
+
+        <!-- ЭКРАН РЕЗУЛЬТАТА -->
+         
+        <div class="window" id="result-window">
+            <div class="notes-header">
+                <span style="font-size: 16px" >&lt; Notes</span>
+               <span style="font-size: 16px; display: flex; align-items: center; gap: 10px;">
+            
+            <!-- Иконка "Поделиться" (квадрат со стрелкой) -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            
+            <!-- Иконка "Меню" (линии в круге) -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="7" y1="9" x2="17" y2="9"></line>
+                <line x1="7" y1="12" x2="17" y2="12"></line>
+                <line x1="7" y1="15" x2="17" y2="15"></line>
+            </svg>
+
+            Done
+        </span>
+            </div>
+            <div class="instagram-post">
+                <div id="result-title" style="font-size: 14px; color: #8c7b7b; margin-bottom: 5px;">ТВОЙ ПЕЙРИНГ:</div>
+                <div id="result-pairing-name">ДРАМИОНА</div>
+                <div id="result-description">Драко и Гермиона: от врагов до возлюбленных.</div>
+                <button class="btn" id="restart-btn">Пройти еще раз</button>
+            </div>
+            <div class="insta-footer">
+                
+        <div class="insta-actions-left">
+            <!-- Закрашенное сердце -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#EA7EA3">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            <!-- Бумажный самолетик (контур) -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+            <!-- Комментарий с точками (контур) -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                <circle cx="8" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
+                <circle cx="12" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
+                <circle cx="16" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
+            </svg>
+        </div>
+        <div class="insta-actions-right">
+            <!-- Сохранение/флажок (контур) -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+        </div>
+        </div>
+    </div>
+
+    <script>
+    const questions = [
+        {
+            question: "Какую конфету «Берти Боттс» ты выберешь?",
+            answers: [
+                { text: "Жёлтую (банан/ушная сера)", pairings: ["Драмиона", "Ромиона"] },
+                { text: "Оранжевую (персик/рвота)", pairings: ["Томиона", "Дринни"] },
+                { text: "Коричневую (шоколадный пуддинг/собачий корм)", pairings: ["Снейджер", "Хэнси"] },
+                { text: "Бежевую (попкорн/тухлое яйцо)", pairings: ["Фремиона"] },
+                { text: "Зелёную (груша/козявки)", pairings: ["Хинни", "Гармония"] },
+                { text: "Розовую (клубника/сороконожка)", pairings: ["Теомионa"] },
+                { text: "Красную (вишня/червяк)", pairings: ["Томиона"] },
+                { text: "Белую (кокос/мыло)", pairings: ["Гармония"] },
+                { text: "Голубую (черника/зубная паста)", pairings: ["Пэнвилл"] }
+            ]
+        },
+        {
+            question: "Если смешать два вкуса драже, какой троп получится?",
+            answers: [
+                { text: "Победа Волдеморта", pairings: ["Драмиона", "Томайна"] },
+                { text: "Хронофантастика", pairings: ["Теомиона", "Томиона"] },
+                { text: "От врагов к возлюбленным", pairings: ["Пэнвилл", "Дринни"] },
+                { text: "Закон о браке", pairings: ["Хэнси"] },
+                { text: "Соулмейты", pairings: ["Хинни"] },
+                { text: "Разница в возрасте", pairings: ["Снейджер"] },
+                { text: "Омегаверс", pairings: ["Гармония"] },
+                { text: "Фиктивные отношения", pairings: ["Ромиона"] },
+                { text: "Восьмой курс", pairings: ["Фремиона"] }
+            ]
+        },
+        {
+            question: "В шоколадных жабах новая коллекция карточек - «Волшебные предметы». Какая карточка попалась тебе?",
+            answers: [
+                { text: "Делюминатор", pairings: ["Хинни", "Дринни"] },
+                { text: "Зеркало Еиналеж", pairings: ["Снейджер", "Томайна"] },
+                { text: "Зачарованный галеон", pairings: ["Гармония", "Ромиона"] },
+                { text: "Маховик времени", pairings: ["Томиона", "Теомиона"] },
+                { text: "Один из артефактов основателей Хогвартса", pairings: ["Пэнвилл"] },
+                { text: "Карта Мародеров", pairings: ["Фремиона"] },
+                { text: "Мантия невидимка", pairings: ["Хенси"] },
+                { text: "Золотой снитч", pairings: ["Драмиона"] }
+            ]
+        },
+        {
+            question: "Какой секрет скрыт на самом дне коробки?",
+            answers: [
+                { text: "Мы оба знаем, кто на самом деле совершил то самое преступление, но унесем эту тайну в могилу", pairings: ["Томиона", "Томайна", "Теомиона"] },
+                { text: "Мои личные дневники исписаны его именем, хотя на публике я делаю вид, что его для меня не существует", pairings: ["Гармония", "Хинни", "Снейджер"] },
+                { text: "Я стерла ему часть ужасных воспоминаний о войне, чтобы он мог нормально уснуть", pairings: ["Драмиона", "Пэнвилл"] },
+                { text: "Один из нас скрывает смертельное проклятие, пытаясь подарить второму иллюзию счастливого будущего", pairings: ["Дринни", "Хэнси"] },
+                { text: "Я предала свои идеалы в ту самую секунду, когда впервые ответила на его поцелуй", pairings: ["Ромиона", "Фремиона"] }
+            ]
+        },
+        {
+            question: "Первое случайное прикосновение произошло...",
+            answers: [
+                { text: "В библиотеке, когда вы просто одновременно потянулись за одной и той же книгой с полки", pairings: ["Томиона", "Теомиона"] },
+                { text: "За столом в Большом зале, когда он передавал тебе тарелку с тостами или кувшин с соком и случайно задел твои пальцы", pairings: ["Фремиона", "Ромиона"] },
+                { text: "Во время работы (или учебы), когда он просто забирал у тебя из рук стопку отчетов", pairings: ["Снейджер", "Томайна"] },
+                { text: "Вы сидели рядом на траве у Черного озера, и ваши плечи случайно соприкоснулись", pairings: ["Гармония", "Хинни"] },
+                { text: "Пришлось прятаться от Филча в тесном чулане для швабр, где вы стояли буквально вжавшись друг в друга", pairings: ["Хэнси", "Дринни"] },
+                { text: "Когда ты обрабатывала ему мелкую царапину, а он внезапно перестал язвить", pairings: ["Драмиона", "Пэнвилл"] }
+            ]
+        },
+        {
+            question: "Какое заклинание или зелье лучше всего описывает вашу динамику?",
+            answers: [
+                { text: "Империо", pairings: ["Томиона"] },
+                { text: "Сектумсемпра", pairings: ["Драмиона", "Дринни"] },
+                { text: "Оборотное зелье", pairings: ["Хэнси"] },
+                { text: "Амортенция", pairings: ["Теомиона", "Томайна"] },
+                { text: "Феликс Фелицис", pairings: ["Ромиона"] },
+                { text: "Легилименция", pairings: ["Снейджер"] },
+                { text: "Обливиэйт", pairings: ["Гармония"] },
+                { text: "Адский огонь", pairings: ["Пэнвилл"] },
+                { text: "Непреложный обет", pairings: ["Хинни"] },
+                { text: "Заклинание Фиделиус", pairings: ["Фремиона"] }
+            ]
+        },
+        {
+            question: "Кажется на коробке есть какие-то метки. Из-за какой ты точно решишь попробовать конфеты?",
+            answers: [
+                { text: "Флафф", pairings: ["Гармония", "Хинни"] },
+                { text: "Ангст", pairings: ["Снейджер", "Ромиона"] },
+                { text: "Токсичные отношения", pairings: ["Томиона", "Томайна"] },
+                { text: "Dub-con", pairings: ["Пэнвилл", "Дринни"] },
+                { text: "Ненадежный рассказчик", pairings: ["Теомиона"] },
+                { text: "Дарк", pairings: ["Драмиона"] },
+                { text: "PWP", pairings: ["Фремиона"] },
+                { text: "Счастливый финал", pairings: ["Хэнси"] }
+            ]
+        },
+        {
+            question: "Какая повседневная фраза заставляет твое сердце биться чаще?",
+            answers: [
+                { text: "Я уже всё решил, просто иди за мной и не задавай вопросов", pairings: ["Томиона"] },
+                { text: "Сегодня холодно. Оденься теплее", pairings: ["Снейджер", "Ромиона"] },
+                { text: "Спорим, ты так не сможешь?", pairings: ["Фремиона", "Хинни"] },
+                { text: "Если он еще раз так на тебя посмотрит, я его убью", pairings: ["Драмиона", "Дринни"] },
+                { text: "Я нашел это сегодня и почему-то сразу подумал о тебе", pairings: ["Теомионa"] },
+                { text: "Завтра отмени все планы. Я кое-что приготовил для тебя", pairings: ["Хэнси"] },
+                { text: "Ты сегодня единственная, кого я хочу видеть", pairings: ["Томайна", "Пэнвилл"] },
+                { text: "Можешь злиться и прогонять меня сколько влезет, я всё равно останусь здесь", pairings: ["Гармония"] }
+            ]
+        },
+        {
+            question: "Если появится возможность превратиться в одно конкретное фантастическое существо, то ты хотела бы стать...",
+            answers: [
+                { text: "Гипогриф", pairings: ["Драмиона", "Хинни"] },
+                { text: "Пикси", pairings: ["Фремиона", "Пэнвилл"] },
+                { text: "Нюхлер", pairings: ["Ромиона", "Томайна"] },
+                { text: "Жмыр", pairings: ["Снейджер", "Гармония"] },
+                { text: "Фестрал", pairings: ["Теомиона", "Хэнси"] },
+                { text: "Единорог", pairings: ["Томиона", "Дринни"] }
+            ]
+        },
+        {
+            question: "Угрозы со стороны недругов для тебя не проблема. А вот кого действительно нужно бояться, так это...",
+            answers: [
+                { text: "Акромантул", pairings: ["Ромиона", "Пэнвилл"] },
+                { text: "Василиск", pairings: ["Томиона", "Томайна"] },
+                { text: "Гриндилоу", pairings: ["Хэнси", "Фремиона"] },
+                { text: "Боггарт", pairings: ["Снейджер", "Теомионa"] },
+                { text: "Дементор", pairings: ["Драмиона", "Гармония"] },
+                { text: "Дракон", pairings: ["Хинни", "Дринни"] }
+            ]
+        },
+        {
+            question: "Урок, который ты бы точно прогуляла, чтобы разделить с любимым коробочку конфет Берти Боттс...",
+            answers: [
+                { text: "История магии", pairings: ["Фремиона", "Ромиона"] },
+                { text: "Древние руны", pairings: ["Драмиона"] },
+                { text: "Прорицание", pairings: ["Гармония", "Пэнвилл"] },
+                { text: "Маггловедение", pairings: ["Томайна", "Хэнси"] },
+                { text: "Трансфигурация", pairings: ["Теомиона"] },
+                { text: "Зельеварение", pairings: ["Дринни", "Хинни"] },
+                { text: "Травология", pairings: ["Снейджер"] },
+                { text: "Защита от темных искусств", pairings: ["Томиона"] }
+            ]
+        },
+        {
+            question: "Букет цветов? По-настоящему лучший подарок — это...",
+            answers: [
+                { text: "Зелье Жидкая удача", pairings: ["Фремиона", "Снейджер", "Пэнвилл"] },
+                { text: "Золотой снитч, выигранный в твою честь", pairings: ["Хинни", "Дринни", "Ромиона"] },
+                { text: "Мантия-невидимка", pairings: ["Гармония", "Теомиона"] },
+                { text: "Личный домой эльф", pairings: ["Драмиона", "Томайна"] },
+                { text: "Ячейка в банке Гринготтс", pairings: ["Томиона", "Хэнси"] }
+            ]
+        },
+        {
+            question: "Так-так-так, на дне осталась последняя конфета. Если ее раскусить, то можно увидеть финальную сцену...",
+            answers: [
+                { text: "На могиле лежит письмо, которое никогда не будет прочитано", pairings: ["Снейджер", "Пэнвилл"] },
+                { text: "Вы наконец уезжаете туда, где вас никто не знает", pairings: ["Драмиона", "Хэнси"] },
+                { text: "Всё заканчивается возвращением к месту, с которого началась история", pairings: ["Ромиона", "Гармония"] },
+                { text: "Он стоит рядом в последние мгновения твоей жизни", pairings: ["Томиона", "Дринни"] },
+                { text: "Ты стоишь посреди почти пустого дома среди коробок и вещей, готовясь переехать к человеку, с которым теперь хочет построить свою жизнь", pairings: ["Фремиона", "Хинни"] },
+                { text: "Ты получаешь возможность прожить другую версию своей жизни", pairings: ["Теомиона", "Томайна"] }
+            ]
+        }
+    ];
+
+    const results = {
+        "Драмиона": "Динамика на фоне противоположности: чистокровный аристократ и маглорождённая отличница, которые привыкли видеть друг в друге врага. Их притяжение строится на конфликте, вынужденной близости и постепенном разрушении предубеждений: за высокомерным Драко прятался напуганный мальчик, а за правильностью Гермионы — сильная, упрямая и эмоциональная девушка. Главная суть пары — я ненавижу тебя, пока не пойму, что именно ты единственный человек, который меня действительно видит настоящим.",
+        "Гармония": "Гарри и Гермиона — очень близкие друзья, которые прекрасно дополняют друг друга. Гарри привык действовать интуитивно, а Гермионра привыкла анализировать и планировать. Их связь строится прежде всего на доверии, уважении и эмоциональной близости, возникшей ещё в школе на фоне дружеских симпатий и привязанностей. Суть пары — лучший друг становится человеком, с которым хочется разделить не только опасности, но и жизнь.",
+        "Ромионa": "Это классическая история о двух совершенно разных людях, которые раздражают друг друга именно потому, что слишком сильно друг другу небезразличны. Рон эмоциональный, импульсивный и неуверенный в себе, а Гермиона рациональная, требовательная и привыкшая полагаться на собственный интеллект. Их динамика держится на спорах, ревности, примирениях и постепенном понимании того, что за раздражением всё это время скрывалась любовь.",
+        "Хэнси": "Пэнси можно противопоставить Гарри как язвительную, амбициозную слизеринку, привыкшую смотреть на него как на врага. Гарри же видит в ней статность, исключительность и дерзость, которая отлично подходит для его «избранной» натуры. Суть пары — враждебность двух людей по разные стороны баррикад, которая постепенно превращается в любопытство, непреодалимое притяжение и запретную связь.",
+        "Теомионa": "Теодор по-разному воспринимается фандомом: как умный, молчаливый, наблюдательный и загадочный слизеринец или как яркий, забавный, хитрый и притягательный юноша — в любом из вариантов он полная противоположность Гермионе, которая привыкла всё анализировать и контролировать. Их роман особенно хорошо работает через интеллектуальное противостояние, тайны и ощущение, что рядом оказался человек, которого невозможно прочитать с первого взгляда.",
+        "Хинни": "Всё начинается с детского восхищения Джинни Гарри и постепенно превращается в полноценные романтические чувства. Джинни становится самостоятельной, уверенной в себе девушкой, а Гарри наконец замечает в ней не «маленькую сестру Рона», а отдельного человека. Их суть — переход от далёкой мечты к взаимной любви, когда идеализированный образ героя уступает место настоящей близости.",
+        "Фремиона": "Фред и Гермиона — почти идеальное столкновение порядка и хаоса: она живёт по правилам и полагается на знания, он получает удовольствие от их нарушения. Их отношения могли бы строиться на постоянных подколах, спорах и попытках Фреда вывести Гермиону из равновесия. Зануда и хулиган, где за бесконечными перепалками постепенно появляется уважение, восхищение и неожиданная химия.",
+        "Томиона": "Это одна из самых тёмных и психологически опасных пар. Том — человек, который стремится контролировать других и лишён привычной романтической морали. Гермиона для него интересна прежде всего как исключительный ум, сила характера и человек, которого трудно подчинить. В зависимости от обстоятельств, это может перетечь в одержимость, интеллектуальное противостояние, манипуляцию или попытку Гермионы сохранить себя рядом с человеком, который постепенно хочет завладеть всем её миром.",
+        "Томайна": "Тут даже больше, чем романтические отношение, тут связь между Тёмным Лордом и его прислужницей, усиленная магией и превращением Нагайны в крестраж. Их отношения построены на абсолютной зависимости, власти и использовании: Том буквально связывает часть своей души с девушкой, которой доверяет больше, чем остальным. Нагайна, обернувшись в змею, становится символом его одиночества, контроля и неспособности к нормальной человеческой привязанности.",
+        "Дринни": "Аристократ-слизеринец и младшая дочь семьи Уизли, которую Драко привык презирать. Джинни при этом не из тех, кто позволит ему смотреть на себя свысока, поэтому их динамика легко превращается в острое противостояние характеров. Суть их пары — мы должны ненавидеть друг друга, потому что наши семьи и факультеты требуют этого, но именно поэтому притяжение становится ещё опаснее и притягательнее.",
+        "Снейджер": "Пара, построенная на интеллектуальном притяжении, разнице в возрасте и статусе. Гермиона — одна из немногих учениц, способных действительно впечатлить Снейпа своими знаниями, а Снейп, в свою очередь, для неё становится воплощением недоступного, сложного и невероятно умного человека, которого невозможно разгадать сразу. В зависимости от обстоятельств динамика может быть наставнической, психологической или романтической.",
+        "Пэнвилл": "Их противоположность особенно искрит на фоне остальных пар: Пэнси — язвительная, социально уверенная слизеринка, а Невилл — тихий и неуверенный гриффиндорец, который долго не может показать собственную силу. Интересно наблюдать, как Невилл постепенно становится увереннее ради неё, а Пэнси обнаруживает, что за его мягкостью скрывается удивительная стойкость."
+    };
+
+        let currentQuestionIndex = 0;
+        let scores = {};
+
+        const startWindow = document.getElementById("start-window");
+        const questionWindow = document.getElementById("question-window");
+        const resultWindow = document.getElementById("result-window");
+        const questionElement = document.getElementById("question");
+        const answerButtonsElement = document.getElementById("answer-buttons");
+        const resultPairingNameElement = document.getElementById("result-pairing-name");
+        const resultDescriptionElement = document.getElementById("result-description");
+        
+        document.getElementById("start-btn").onclick = startQuiz;
+        document.getElementById("restart-btn").onclick = restartQuiz;
+
+        function startQuiz() {
+            scores = { "Драмиона": 0, "Гармония": 0, "Ромионa": 0, "Хэнси": 0, "Теомионa": 0, "Хинни": 0, "Фремиона": 0, "Томиона": 0, "Дринни": 0, "Снейджер": 0, "Пэнвилл": 0, "Томайна": 0 };
+            currentQuestionIndex = 0;
+            startWindow.style.display = "none";
+            questionWindow.style.display = "flex";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            answerButtonsElement.innerHTML = "";
+            let currentQuestion = questions[currentQuestionIndex];
+            questionElement.innerText = currentQuestion.question;
+            
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerText = answer.text;
+                button.classList.add("btn");
+                button.onclick = () => selectAnswer(answer.pairings);
+                answerButtonsElement.appendChild(button);
+            });
+        }
+
+        function selectAnswer(pairings) {
+            pairings.forEach(pairing => {
+                if(scores[pairing] !== undefined) scores[pairing]++;
+            });
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            questionWindow.style.display = "none";
+            resultWindow.style.display = "flex";
+            
+            let maxScore = 0;
+            let finalPairing = "Драмиона"; 
+
+            for (const [pairing, score] of Object.entries(scores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    finalPairing = pairing;
+                }
+            }
+            
+            resultPairingNameElement.innerText = finalPairing.toUpperCase();
+            resultDescriptionElement.innerText = results[finalPairing] || "Описание пейринга скоро появится...";
+        }
+
+        function restartQuiz() {
+            resultWindow.style.display = "none";
+            startWindow.style.display = "flex";
+        }
+    </script>
+    <a href="https://t.me/bertienews" target="_blank" id="tg-credit">
+    тгк: Bertie Bott's
+    </a>
+</body>
+</html>
