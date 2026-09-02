@@ -142,17 +142,16 @@
         /* === 3. ЭКРАН РЕЗУЛЬТАТА: Стиль Instagram === */
         #result-window {
             width: 90%; 
-            min-height: 350px;
-            max-height: 85vh; 
-            min-height: auto;
-            height: auto; 
+            max-width: 400px;
             background: #ffffff; 
             border-radius: 10px;
             display: none; 
             flex-direction: column;
             border: 1px solid #ffffff; 
             position: relative;
-            overflow-y: auto;
+            box-sizing: border-box;
+            padding: 20px;
+            max-height: 85vh;
         }
         
         .instagram-post {
@@ -183,6 +182,9 @@
             color: #5c4d4d;
             margin-bottom: 10px;
             text-align: center;
+            overflow-y: auto;
+            max-height: 40vh; 
+            padding-right: 5px;
         }
 
         .insta-footer {
