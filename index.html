@@ -139,10 +139,12 @@
             gap: 10px;
         }
 
-        /* === 3. ЭКРАН РЕЗУЛЬТАТА: Стиль Instagram === */
+        /* === ЭКРАН РЕЗУЛЬТАТА === */
         #result-window {
             width: 90%; 
             max-width: 400px;
+            max-height: 85vh; /* Ограничиваем высоту по экрану телефона */
+            height: auto;     /* Автоматический рост по контенту */
             background: #ffffff; 
             border-radius: 10px;
             display: none; 
@@ -151,20 +153,6 @@
             position: relative;
             box-sizing: border-box;
             padding: 20px;
-            max-height: 85vh;
-        }
-        
-        .instagram-post {
-            width: 90%; 
-            max-width: 400px;
-            height: 75vh; /* Жестко ограничиваем высоту окна по экрану телефона */
-            background: #ffffff; 
-            border-radius: 10px;
-            display: none; 
-            flex-direction: column;
-            border: 1px solid #ffffff; 
-            position: relative;
-            box-sizing: border-box;
         }
 
         #result-pairing-name {
@@ -180,24 +168,22 @@
             font-size: 13px;
             line-height: 1.4;
             color: #5c4d4d;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             text-align: center;
-            overflow-y: auto;
-            max-height: 40vh; 
+            overflow-y: auto;  /* Скролл появляется, если текст длинный (как у Томионы) */
+            max-height: 40vh;  /* Текст прокручивается внутри, не ломая карточку */
             padding-right: 5px;
+            flex-grow: 1;
         }
 
         .insta-footer {
             width: 100%;
-            position: absolute;
-            bottom: 15px;
-            left: 0;
-            padding: 0 15px;
             display: flex;
             justify-content: space-between;
             color: #EA7EA3;
             font-size: 18px;
             box-sizing: border-box;
+            margin-top: 10px;
         }
 
         /* СТИЛИ КНОПОК */
@@ -289,63 +275,58 @@
         </div>
 
         <!-- ЭКРАН РЕЗУЛЬТАТА -->
-         
         <div class="window" id="result-window">
             <div class="notes-header">
-                <span style="font-size: 16px" >&lt; Notes</span>
-               <span style="font-size: 16px; display: flex; align-items: center; gap: 10px;">
-            
-            <!-- Иконка "Поделиться" (квадрат со стрелкой) -->
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
-            </svg>
-            
-            <!-- Иконка "Меню" (линии в круге) -->
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="7" y1="9" x2="17" y2="9"></line>
-                <line x1="7" y1="12" x2="17" y2="12"></line>
-                <line x1="7" y1="15" x2="17" y2="15"></line>
-            </svg>
+                <span style="font-size: 16px">&lt; Notes</span>
+                <span style="font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                    <!-- Иконка "Поделиться" -->
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                    <!-- Иконка "Меню" -->
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="7" y1="9" x2="17" y2="9"></line>
+                        <line x1="7" y1="12" x2="17" y2="12"></line>
+                        <line x1="7" y1="15" x2="17" y2="15"></line>
+                    </svg>
+                    Done
+                </span>
+            </div>
 
-            Done
-        </span>
-            </div>
-            <div class="instagram-post">
-                <div id="result-title" style="font-size: 14px; color: #8c7b7b; margin-bottom: 5px;">ТВОЙ ПЕЙРИНГ:</div>
-                <div id="result-pairing-name">ДРАМИОНА</div>
-                <div id="result-description">Драко и Гермиона: от врагов до возлюбленных.</div>
-                <button class="btn" id="restart-btn">Пройти еще раз</button>
-            </div>
+            <div id="result-title" style="font-size: 14px; color: #8c7b7b; margin-bottom: 5px;">ТВОЙ ПЕЙРИНГ:</div>
+            <div id="result-pairing-name">ДРАМИОНА</div>
+            <div id="result-description">Драко и Гермиона: от врагов до возлюбленных.</div>
+            <button class="btn" id="restart-btn" style="margin-bottom: 15px;">Пройти еще раз</button>
+
             <div class="insta-footer">
-                
-        <div class="insta-actions-left">
-            <!-- Закрашенное сердце -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#EA7EA3">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-            <!-- Бумажный самолетик (контур) -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
-            <!-- Комментарий с точками (контур) -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                <circle cx="8" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
-                <circle cx="12" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
-                <circle cx="16" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
-            </svg>
+                <div class="insta-actions-left">
+                    <!-- Закрашенное сердце -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#EA7EA3">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <!-- Бумажный самолетик -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    <!-- Комментарий -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        <circle cx="8" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
+                        <circle cx="12" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
+                        <circle cx="16" cy="12" r="1.5" fill="#EA7EA3" stroke="none"/>
+                    </svg>
+                </div>
+                <div class="insta-actions-right">
+                    <!-- Сохранение -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </div>
+            </div>
         </div>
-        <div class="insta-actions-right">
-            <!-- Сохранение/флажок (контур) -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EA7EA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-            </svg>
-        </div>
-        </div>
-    </div>
 
     <script>
     const questions = [
